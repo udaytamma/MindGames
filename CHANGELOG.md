@@ -5,6 +5,17 @@ All notable changes to MindGames will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.1] - 2025-12-28
+
+### Security
+- Fixed 3 high severity vulnerabilities in glob dependency
+- Updated eslint-config-next from 14.x to 15.x
+- Updated eslint from 8.x to 9.x
+- Resolved all npm audit warnings
+
+### Changed
+- Updated deprecated packages (rimraf, inflight, glob, humanwhocodes)
+
 ## [1.1.0] - 2025-12-27
 
 ### Added
