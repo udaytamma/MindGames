@@ -4,7 +4,7 @@ import { GameProvider } from '@/contexts/GameContext';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'MindGames - Mental Math Training',
+  title: 'Mind Games - Mental Math Training',
   description:
     'Practice mental math with customizable arithmetic chains. Improve your calculation speed and accuracy with interactive exercises.',
   keywords: [
@@ -17,9 +17,9 @@ export const metadata: Metadata = {
     'calculator',
     'training',
   ],
-  authors: [{ name: 'MindGames' }],
+  authors: [{ name: 'Mind Games' }],
   openGraph: {
-    title: 'MindGames - Mental Math Training',
+    title: 'Mind Games - Mental Math Training',
     description:
       'Practice mental math with customizable arithmetic chains. Improve your calculation speed and accuracy.',
     type: 'website',

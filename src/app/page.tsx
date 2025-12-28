@@ -198,7 +198,7 @@ export default function Home() {
                 <Brain className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h1 className="text-lg font-bold text-slate-900 dark:text-white">MindGames</h1>
+                <h1 className="text-lg font-bold text-slate-900 dark:text-white">Mind Games</h1>
                 <p className="text-xs text-slate-500 dark:text-slate-400">Mental Math Training</p>
               </div>
             </div>
@@ -575,7 +575,7 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="py-6 text-center text-xs text-slate-400 dark:text-slate-600">
-        MindGames - Practice makes perfect
+        Mind Games - Practice makes perfect
       </footer>
     </div>
   );
