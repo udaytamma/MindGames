@@ -177,16 +177,6 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
-      {/* Encouragement Toast for Kid Mode - Fixed to viewport top */}
-      {encourageMessage && userProfile === 'kid' && (
-        <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-[100] animate-bounce">
-          <div className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white px-4 sm:px-6 py-3 sm:py-4 rounded-2xl shadow-xl flex items-center gap-2 sm:gap-3">
-            <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 animate-pulse" />
-            <span className="text-base sm:text-lg font-bold">{encourageMessage}</span>
-            <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 animate-pulse" />
-          </div>
-        </div>
-      )}
 
       {/* Header */}
       <header className="sticky top-0 z-40 glass border-b border-slate-200/50 dark:border-slate-800/50">
@@ -477,17 +467,28 @@ export default function Home() {
             {worksheet && worksheet.chains.length > 0 ? (
               <div className="space-y-3">
                 {worksheet.chains.map((chain, index) => (
-                  <HorizontalChain
-                    key={chain.id}
-                    chain={chain}
-                    chainIndex={index}
-                    isActive={isPlaying && index === activeChainIndex}
-                    answers={answers}
-                    onSubmitAnswer={submitAnswer}
-                    onChainComplete={() => handleChainComplete(index)}
-                    activeInputIndex={index === activeChainIndex ? activeInputIndex : 0}
-                    onSetActiveInput={setActiveInput}
-                  />
+                  <React.Fragment key={chain.id}>
+                    <HorizontalChain
+                      chain={chain}
+                      chainIndex={index}
+                      isActive={isPlaying && index === activeChainIndex}
+                      answers={answers}
+                      onSubmitAnswer={submitAnswer}
+                      onChainComplete={() => handleChainComplete(index)}
+                      activeInputIndex={index === activeChainIndex ? activeInputIndex : 0}
+                      onSetActiveInput={setActiveInput}
+                    />
+                    {/* Inline encouragement message after completed chain */}
+                    {encourageMessage && userProfile === 'kid' && lastCompletedChainIndex === index && (
+                      <div className="flex items-center justify-center py-2 animate-bounce">
+                        <div className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white px-4 py-2 rounded-xl shadow-lg flex items-center gap-2">
+                          <Sparkles className="w-4 h-4 animate-pulse" />
+                          <span className="text-sm font-bold">{encourageMessage}</span>
+                          <Sparkles className="w-4 h-4 animate-pulse" />
+                        </div>
+                      </div>
+                    )}
+                  </React.Fragment>
                 ))}
               </div>
             ) : (
