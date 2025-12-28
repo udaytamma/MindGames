@@ -334,7 +334,7 @@ export default function Home() {
                         onChange={(e) => setConfig({ chainCount: parseInt(e.target.value) })}
                         className="select text-sm"
                       >
-                        {[3, 4, 5, 6, 7, 8, 10].map((n) => (
+                        {[2, 3, 4, 5, 6, 7, 8, 10].map((n) => (
                           <option key={n} value={n}>{n} chains</option>
                         ))}
                       </select>
@@ -575,7 +575,9 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="py-6 text-center text-xs text-slate-400 dark:text-slate-600">
-        Mind Games - Practice makes perfect
+        {userProfile === 'adult'
+          ? 'Mind Games - Practice helps better mental health'
+          : 'Mind Games - Practice makes perfect'}
       </footer>
     </div>
   );
