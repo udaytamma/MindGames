@@ -471,6 +471,17 @@ export default function Home() {
               )}
             </div>
 
+            {/* Desktop encouragement message - shown at top */}
+            {encourageMessage && userProfile === 'kid' && (
+              <div className="hidden lg:flex items-center justify-center py-3 animate-bounce">
+                <div className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white px-6 py-3 rounded-xl shadow-lg flex items-center gap-3">
+                  <Sparkles className="w-5 h-5 animate-pulse" />
+                  <span className="text-lg font-bold">{encourageMessage}</span>
+                  <Sparkles className="w-5 h-5 animate-pulse" />
+                </div>
+              </div>
+            )}
+
             {/* Chains Display */}
             {worksheet && worksheet.chains.length > 0 ? (
               <div className="space-y-3">
@@ -486,9 +497,9 @@ export default function Home() {
                       activeInputIndex={index === activeChainIndex ? activeInputIndex : 0}
                       onSetActiveInput={setActiveInput}
                     />
-                    {/* Inline encouragement message after completed chain */}
+                    {/* Mobile inline encouragement message after completed chain */}
                     {encourageMessage && userProfile === 'kid' && lastCompletedChainIndex === index && (
-                      <div className="flex items-center justify-center py-2 animate-bounce">
+                      <div className="lg:hidden flex items-center justify-center py-2 animate-bounce">
                         <div className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white px-4 py-2 rounded-xl shadow-lg flex items-center gap-2">
                           <Sparkles className="w-4 h-4 animate-pulse" />
                           <span className="text-sm font-bold">{encourageMessage}</span>

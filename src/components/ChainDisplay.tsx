@@ -174,13 +174,18 @@ export default function HorizontalChain({
   const completedCount = chain.problems.filter(p => answers.has(p.id) && answers.get(p.id)?.userAnswer !== null).length;
   const correctCount = chain.problems.filter(p => answers.get(p.id)?.isCorrect === true).length;
 
-  // Helper to get the left operand for a problem (previous result or starting number)
-  const getLeftOperand = (index: number): number => {
+  // Helper to get the left operand for a problem (previous user answer or starting number)
+  // For mobile: uses the user's answer to the previous problem
+  const getLeftOperandFromUserAnswer = (index: number): number | null => {
     if (index === 0) {
       return chain.startingNumber;
     }
-    // Use the result of the previous problem
-    return chain.problems[index - 1].result;
+    // Use the user's answer from the previous problem (not the correct result)
+    const prevAnswer = answers.get(chain.problems[index - 1].id);
+    if (prevAnswer && prevAnswer.userAnswer !== null) {
+      return prevAnswer.userAnswer;
+    }
+    return null; // Previous not answered yet
   };
 
   return (
@@ -242,13 +247,11 @@ export default function HorizontalChain({
             const isDisabled = !isActive || index !== activeInputIndex;
             const hasAnswered = answer !== undefined && answer.userAnswer !== null;
 
-            // Only show left operand if it's the first problem OR if the previous problem was answered
-            const prevAnswer = index > 0 ? answers.get(chain.problems[index - 1].id) : null;
-            const prevAnswered = index === 0 || (prevAnswer !== undefined && prevAnswer.userAnswer !== null);
-            const leftOperand = getLeftOperand(index);
+            // Get left operand from user's answer (returns null if previous not answered)
+            const leftOperand = getLeftOperandFromUserAnswer(index);
 
             // Don't render problems that aren't ready yet (previous not answered)
-            if (!prevAnswered) {
+            if (leftOperand === null) {
               return null;
             }
 
