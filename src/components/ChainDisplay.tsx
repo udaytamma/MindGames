@@ -140,12 +140,14 @@ export default function HorizontalChain({
   activeInputIndex,
   onSetActiveInput,
 }: HorizontalChainProps) {
-  const inputRefs = useRef<React.RefObject<HTMLInputElement>[]>([]);
+  const desktopInputRefs = useRef<React.RefObject<HTMLInputElement>[]>([]);
+  const mobileInputRefs = useRef<React.RefObject<HTMLInputElement>[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Initialize refs array
+  // Initialize refs arrays for both layouts
   useEffect(() => {
-    inputRefs.current = chain.problems.map((_, i) => inputRefs.current[i] || createRef<HTMLInputElement>());
+    desktopInputRefs.current = chain.problems.map((_, i) => desktopInputRefs.current[i] || createRef<HTMLInputElement>());
+    mobileInputRefs.current = chain.problems.map((_, i) => mobileInputRefs.current[i] || createRef<HTMLInputElement>());
   }, [chain.problems]);
 
   const handleTabToNext = useCallback((currentIndex: number) => {
@@ -157,10 +159,10 @@ export default function HorizontalChain({
     }
   }, [chain.problems.length, onChainComplete, onSetActiveInput]);
 
-  // Scroll active input into view
+  // Scroll active input into view (desktop)
   useEffect(() => {
-    if (isActive && inputRefs.current[activeInputIndex]?.current) {
-      inputRefs.current[activeInputIndex].current?.scrollIntoView({
+    if (isActive && desktopInputRefs.current[activeInputIndex]?.current) {
+      desktopInputRefs.current[activeInputIndex].current?.scrollIntoView({
         behavior: 'smooth',
         block: 'nearest',
         inline: 'center',
@@ -239,7 +241,16 @@ export default function HorizontalChain({
             const isProblemActive = isActive && index === activeInputIndex;
             const isDisabled = !isActive || index !== activeInputIndex;
             const hasAnswered = answer !== undefined && answer.userAnswer !== null;
+
+            // Only show left operand if it's the first problem OR if the previous problem was answered
+            const prevAnswer = index > 0 ? answers.get(chain.problems[index - 1].id) : null;
+            const prevAnswered = index === 0 || (prevAnswer !== undefined && prevAnswer.userAnswer !== null);
             const leftOperand = getLeftOperand(index);
+
+            // Don't render problems that aren't ready yet (previous not answered)
+            if (!prevAnswered) {
+              return null;
+            }
 
             return (
               <div
@@ -295,7 +306,7 @@ export default function HorizontalChain({
                   =
                 </span>
                 <ChainInput
-                  ref={inputRefs.current[index]}
+                  ref={mobileInputRefs.current[index]}
                   problem={problem}
                   isActive={isProblemActive}
                   isDisabled={isDisabled}
@@ -356,7 +367,7 @@ export default function HorizontalChain({
 
               {/* Input */}
               <ChainInput
-                ref={inputRefs.current[index]}
+                ref={desktopInputRefs.current[index]}
                 problem={problem}
                 isActive={isProblemActive}
                 isDisabled={isDisabled}
