@@ -177,13 +177,13 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
-      {/* Encouragement Toast for Kid Mode */}
+      {/* Encouragement Toast for Kid Mode - Fixed to viewport top */}
       {encourageMessage && userProfile === 'kid' && (
-        <div className="fixed top-20 left-1/2 transform -translate-x-1/2 z-50 animate-bounce">
-          <div className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white px-6 py-4 rounded-2xl shadow-xl flex items-center gap-3">
-            <Sparkles className="w-6 h-6 animate-pulse" />
-            <span className="text-lg font-bold">{encourageMessage}</span>
-            <Sparkles className="w-6 h-6 animate-pulse" />
+        <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-[100] animate-bounce">
+          <div className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white px-4 sm:px-6 py-3 sm:py-4 rounded-2xl shadow-xl flex items-center gap-2 sm:gap-3">
+            <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 animate-pulse" />
+            <span className="text-base sm:text-lg font-bold">{encourageMessage}</span>
+            <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 animate-pulse" />
           </div>
         </div>
       )}
@@ -387,6 +387,7 @@ export default function Home() {
                 <button
                   onClick={() => {
                     generateNewWorksheet();
+                    setShowSettings(false); // Auto-hide settings on mobile
                   }}
                   disabled={isPlaying}
                   className="btn btn-primary"

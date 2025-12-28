@@ -109,11 +109,17 @@ function gameReducer(state: GameState, action: GameAction): GameState {
         config: { ...state.config, operationMix: action.mix },
       };
 
-    case 'SET_USER_PROFILE':
+    case 'SET_USER_PROFILE': {
+      // Set profile-specific defaults
+      const profileConfig = action.profile === 'kid'
+        ? { chainCount: 2, chainLength: 4 }
+        : {}; // Adults keep current config
       return {
         ...state,
         userProfile: action.profile,
+        config: { ...state.config, ...profileConfig },
       };
+    }
 
     case 'GENERATE_WORKSHEET': {
       const worksheet = generateWorksheet(state.config);

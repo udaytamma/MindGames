@@ -241,24 +241,25 @@ export default function HorizontalChain({
 
           return (
             <React.Fragment key={problem.id}>
-              {/* Arrow and operator */}
-              <div className={clsx(
-                'flex items-center flex-shrink-0',
-                isExpanded ? 'gap-1' : 'gap-0.5'
+              {/* Operator only (no arrow before) */}
+              <span className={clsx(
+                'flex-shrink-0 font-semibold tabular-nums',
+                isExpanded
+                  ? 'text-xl text-primary-600 dark:text-primary-400'
+                  : 'text-sm text-slate-500 dark:text-slate-500'
               )}>
-                <ChevronRight className={clsx(
-                  'text-slate-300 dark:text-slate-600',
-                  isExpanded ? 'w-5 h-5' : 'w-3 h-3'
-                )} />
-                <span className={clsx(
-                  'font-semibold tabular-nums',
-                  isExpanded
-                    ? 'text-xl text-primary-600 dark:text-primary-400'
-                    : 'text-sm text-slate-500 dark:text-slate-500'
-                )}>
-                  {OPERATION_SYMBOLS[problem.operation]}{formatNumber(problem.operand)}
-                </span>
-              </div>
+                {OPERATION_SYMBOLS[problem.operation]}{formatNumber(problem.operand)}
+              </span>
+
+              {/* Equals sign */}
+              <span className={clsx(
+                'flex-shrink-0 font-semibold',
+                isExpanded
+                  ? 'text-xl text-slate-400 dark:text-slate-500'
+                  : 'text-sm text-slate-400 dark:text-slate-600'
+              )}>
+                =
+              </span>
 
               {/* Input */}
               <ChainInput
@@ -271,6 +272,14 @@ export default function HorizontalChain({
                 onTabToNext={() => handleTabToNext(index)}
                 isExpanded={isExpanded}
               />
+
+              {/* Arrow after answer (except for last problem) */}
+              {index < chain.problems.length - 1 && (
+                <ChevronRight className={clsx(
+                  'flex-shrink-0 text-slate-300 dark:text-slate-600',
+                  isExpanded ? 'w-5 h-5' : 'w-3 h-3'
+                )} />
+              )}
             </React.Fragment>
           );
         })}
