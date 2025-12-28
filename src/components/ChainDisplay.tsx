@@ -14,21 +14,22 @@ interface ChainInputProps {
   onSubmit: (answer: number) => void;
   onTabToNext: () => void;
   isExpanded: boolean;
+  isMobileVertical?: boolean;
 }
 
 const ChainInput = React.forwardRef<HTMLInputElement, ChainInputProps>(
   function ChainInput(
-    { problem, isActive, isDisabled, answer, onSubmit, onTabToNext, isExpanded },
+    { problem, isActive, isDisabled, answer, onSubmit, onTabToNext, isExpanded, isMobileVertical },
     ref
   ) {
     const [inputValue, setInputValue] = useState('');
     const hasAnswered = answer !== undefined && answer.userAnswer !== null;
 
     useEffect(() => {
-      if (isActive && ref && 'current' in ref && ref.current && isExpanded) {
+      if (isActive && ref && 'current' in ref && ref.current && (isExpanded || isMobileVertical)) {
         ref.current.focus();
       }
-    }, [isActive, ref, isExpanded]);
+    }, [isActive, ref, isExpanded, isMobileVertical]);
 
     useEffect(() => {
       if (hasAnswered) {
@@ -58,9 +59,12 @@ const ChainInput = React.forwardRef<HTMLInputElement, ChainInputProps>(
       }
     };
 
-    const baseClasses = isExpanded
-      ? 'w-24 h-12 text-center font-mono text-2xl font-semibold border-2 rounded-lg transition-all duration-150'
-      : 'w-14 h-7 text-center font-mono text-sm border rounded transition-all duration-150';
+    // Mobile vertical layout uses different sizing
+    const baseClasses = isMobileVertical
+      ? 'w-20 h-10 text-center font-mono text-xl font-semibold border-2 rounded-lg transition-all duration-150'
+      : isExpanded
+        ? 'w-24 h-12 text-center font-mono text-2xl font-semibold border-2 rounded-lg transition-all duration-150'
+        : 'w-14 h-7 text-center font-mono text-sm border rounded transition-all duration-150';
 
     const getInputClassName = () => {
       if (hasAnswered) {
@@ -88,7 +92,7 @@ const ChainInput = React.forwardRef<HTMLInputElement, ChainInputProps>(
       return (
         <div className={clsx('flex items-center justify-center gap-1', getInputClassName())}>
           <span className="font-mono">{answer?.userAnswer}</span>
-          {isExpanded && (
+          {(isExpanded || isMobileVertical) && (
             answer?.isCorrect ? (
               <Check className="w-4 h-4" />
             ) : (
@@ -168,22 +172,31 @@ export default function HorizontalChain({
   const completedCount = chain.problems.filter(p => answers.has(p.id) && answers.get(p.id)?.userAnswer !== null).length;
   const correctCount = chain.problems.filter(p => answers.get(p.id)?.isCorrect === true).length;
 
+  // Helper to get the left operand for a problem (previous result or starting number)
+  const getLeftOperand = (index: number): number => {
+    if (index === 0) {
+      return chain.startingNumber;
+    }
+    // Use the result of the previous problem
+    return chain.problems[index - 1].result;
+  };
+
   return (
     <div
       ref={containerRef}
       className={clsx(
         'rounded-xl border transition-all duration-500 ease-out overflow-hidden',
         isExpanded
-          ? 'bg-white dark:bg-slate-900 border-primary-200 dark:border-primary-800 shadow-lg p-5'
+          ? 'bg-white dark:bg-slate-900 border-primary-200 dark:border-primary-800 shadow-lg p-4 lg:p-5'
           : 'bg-slate-50 dark:bg-slate-900/50 border-slate-200 dark:border-slate-800 p-3 hover:bg-slate-100 dark:hover:bg-slate-800/50 cursor-pointer'
       )}
     >
       {/* Chain header */}
-      <div className={clsx('flex items-center gap-3', isExpanded ? 'mb-4' : 'mb-2')}>
+      <div className={clsx('flex items-center gap-3', isExpanded ? 'mb-3 lg:mb-4' : 'mb-2')}>
         <div className={clsx(
           'rounded-lg font-bold flex items-center justify-center transition-all duration-300',
           isExpanded
-            ? 'w-10 h-10 text-lg bg-primary-100 dark:bg-primary-900/50 text-primary-700 dark:text-primary-300'
+            ? 'w-8 h-8 lg:w-10 lg:h-10 text-base lg:text-lg bg-primary-100 dark:bg-primary-900/50 text-primary-700 dark:text-primary-300'
             : 'w-6 h-6 text-xs bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400'
         )}>
           {chainIndex + 1}
@@ -218,10 +231,90 @@ export default function HorizontalChain({
         )}
       </div>
 
-      {/* Chain flow */}
+      {/* Mobile Vertical Layout (shown on small screens when expanded) */}
+      {isExpanded && (
+        <div className="lg:hidden space-y-2">
+          {chain.problems.map((problem, index) => {
+            const answer = answers.get(problem.id);
+            const isProblemActive = isActive && index === activeInputIndex;
+            const isDisabled = !isActive || index !== activeInputIndex;
+            const hasAnswered = answer !== undefined && answer.userAnswer !== null;
+            const leftOperand = getLeftOperand(index);
+
+            return (
+              <div
+                key={problem.id}
+                className={clsx(
+                  'flex items-center gap-2 p-2 rounded-lg transition-all duration-200',
+                  hasAnswered
+                    ? 'bg-slate-100 dark:bg-slate-800/50 opacity-60'
+                    : isProblemActive
+                      ? 'bg-primary-50 dark:bg-primary-900/20'
+                      : 'opacity-50'
+                )}
+              >
+                {/* Full equation: leftOperand operator operand = answer */}
+                <span className={clsx(
+                  'font-mono font-semibold tabular-nums',
+                  hasAnswered
+                    ? 'text-lg text-slate-500 dark:text-slate-400'
+                    : isProblemActive
+                      ? 'text-xl text-slate-800 dark:text-slate-100'
+                      : 'text-lg text-slate-400 dark:text-slate-500'
+                )}>
+                  {formatNumber(leftOperand)}
+                </span>
+                <span className={clsx(
+                  'font-semibold',
+                  hasAnswered
+                    ? 'text-lg text-slate-400 dark:text-slate-500'
+                    : isProblemActive
+                      ? 'text-xl text-primary-600 dark:text-primary-400'
+                      : 'text-lg text-slate-400 dark:text-slate-500'
+                )}>
+                  {OPERATION_SYMBOLS[problem.operation]}
+                </span>
+                <span className={clsx(
+                  'font-mono font-semibold tabular-nums',
+                  hasAnswered
+                    ? 'text-lg text-slate-500 dark:text-slate-400'
+                    : isProblemActive
+                      ? 'text-xl text-slate-800 dark:text-slate-100'
+                      : 'text-lg text-slate-400 dark:text-slate-500'
+                )}>
+                  {formatNumber(problem.operand)}
+                </span>
+                <span className={clsx(
+                  'font-semibold',
+                  hasAnswered
+                    ? 'text-lg text-slate-400 dark:text-slate-500'
+                    : isProblemActive
+                      ? 'text-xl text-slate-400 dark:text-slate-500'
+                      : 'text-lg text-slate-300 dark:text-slate-600'
+                )}>
+                  =
+                </span>
+                <ChainInput
+                  ref={inputRefs.current[index]}
+                  problem={problem}
+                  isActive={isProblemActive}
+                  isDisabled={isDisabled}
+                  answer={answer}
+                  onSubmit={(ans) => onSubmitAnswer(problem.id, ans)}
+                  onTabToNext={() => handleTabToNext(index)}
+                  isExpanded={false}
+                  isMobileVertical={true}
+                />
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Desktop Horizontal Layout (hidden on mobile when expanded) */}
       <div className={clsx(
-        'flex items-center overflow-x-auto pb-2 scrollbar-thin',
-        isExpanded ? 'gap-3' : 'gap-1'
+        'items-center overflow-x-auto pb-2 scrollbar-thin',
+        isExpanded ? 'hidden lg:flex gap-3' : 'flex gap-1'
       )}>
         {/* Starting number */}
         <span className={clsx(

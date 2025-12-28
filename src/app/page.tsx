@@ -135,19 +135,27 @@ export default function Home() {
         const message = FINAL_COMPLETE_MESSAGES[Math.floor(Math.random() * FINAL_COMPLETE_MESSAGES.length)];
         setEncourageMessage(message);
         triggerConfetti();
+
+        // Clear final message after 10 seconds
+        const timer = setTimeout(() => {
+          setEncourageMessage(null);
+          clearChainCompletion();
+        }, 10000);
+
+        return () => clearTimeout(timer);
       } else {
         // Show encouraging message
         const message = CHAIN_COMPLETE_MESSAGES[Math.floor(Math.random() * CHAIN_COMPLETE_MESSAGES.length)];
         setEncourageMessage(message);
+
+        // Clear chain message after 3 seconds
+        const timer = setTimeout(() => {
+          setEncourageMessage(null);
+          clearChainCompletion();
+        }, 3000);
+
+        return () => clearTimeout(timer);
       }
-
-      // Clear message after 2 seconds
-      const timer = setTimeout(() => {
-        setEncourageMessage(null);
-        clearChainCompletion();
-      }, 2000);
-
-      return () => clearTimeout(timer);
     }
   }, [lastCompletedChainIndex, userProfile, isPlaying, isAllChainsComplete, triggerConfetti, clearChainCompletion]);
 

@@ -145,8 +145,8 @@ export type UserProfile = 'kid' | 'adult';
 export const DEFAULT_CONFIG: GameConfig = {
   difficultyLevel: 1,
   maxResult: 100,
-  chainLength: 6,
-  chainCount: 5,
+  chainLength: 4,  // Kid-friendly default
+  chainCount: 2,   // Kid-friendly default
   notationStyle: 'operators',
   showSumOfDigits: false,
   showResultLines: false,

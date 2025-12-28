@@ -73,7 +73,7 @@ const initialState: GameState = {
   activeChainIndex: 0,
   activeInputIndex: 0,
   stats: initialStats,
-  userProfile: 'adult',
+  userProfile: 'kid',
   lastCompletedChainIndex: null,
 };
 
