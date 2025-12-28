@@ -5,6 +5,34 @@ All notable changes to MindGames will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2025-12-27
+
+### Added
+- **Mobile Vertical Layout**: New card-style layout for mobile devices
+  - Full equations displayed (e.g., `32 × 3 = ?` instead of just `× 3 = ?`)
+  - Problems reveal one at a time as user answers each
+  - Answered rows fade to gray with muted styling
+  - Active problem row emphasized with primary color
+- **Kid Default Profile**: Kid is now the default profile with kid-friendly config
+  - Default: 2 chains, 4 chain length
+- **Configurable Message Timings**:
+  - Final encouragement message (after confetti): 10 seconds
+  - Chain completion message: 3 seconds
+- **Desktop Encouragement Message**: Now appears at top of chains section
+- **Separate Input Refs**: Desktop and mobile layouts now use independent refs
+
+### Fixed
+- Mobile layout no longer reveals answers prematurely
+- Desktop keyboard input (Tab + typing) works correctly after message changes
+- Focus management between desktop and mobile layouts
+
+### Changed
+- Minimum chains reduced from 3 to 2
+- Profile-based footer messages:
+  - Adult: "Mind Games - Practice helps better mental health"
+  - Kid: "Mind Games - Practice makes perfect"
+- Auto-hide settings panel when Generate is clicked on mobile
+
 ## [1.1.1] - 2025-12-28
 
 ### Security
